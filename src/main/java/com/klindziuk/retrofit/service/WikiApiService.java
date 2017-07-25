@@ -8,8 +8,6 @@ import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 
 public interface WikiApiService {
-		@GET("w/api.php")
-	    Call<ResponseBody> getResponse(@QueryMap Map<String, String> options);
-	}
-	 
-
+	@GET("w/api.php")
+	Call<ResponseBody> getResponse(@QueryMap Map<String, String> options);
+}

@@ -49,7 +49,7 @@ public final class WikiApiServiceManager  {
 					WikiResponse wikiresponse = new WikiResponse();
 					wikiresponse.setCode(response.code());
 				  //wikiresponse.setBody(response.body().string());
-					//we get a very huge string, so just take number of symbols
+					// we receive a very huge string, so just take only size
 					wikiresponse.setBody(String.valueOf(response.body().string().length()));
 					wikiresponse.setMessage(response.message());
 					wikiresponse.setHeaders(response.headers().toMultimap());
