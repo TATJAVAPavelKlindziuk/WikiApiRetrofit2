@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wiki xmlns="http://www.epam.klindziuk.com/wiki"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.klindziuk.com/wiki file:///C:/Users/Pavel_Klindziuk/Program_Files/eclipse/workspace/Retrofit/xsd/wiki.xsd">
+<request>            
+<parameter name ="action" value = "query" />    
+<parameter name ="prop"   value = "revisions" />    
+<parameter name ="titles" value = "Barcelona" />    
+<parameter name ="rvprop" value = "timestamp|user|comment|content" />    
+<parameter name ="format" value = "json" />
+</request>
+<request>            
+<parameter name ="action" value = "query" />    
+<parameter name ="prop"   value = "revisions" />    
+<parameter name ="titles" value = "Minsk" />    
+<parameter name ="rvprop" value = "timestamp|user|comment|content" />    
+<parameter name ="format" value = "json" />
+</request>    
+<request>            
+<parameter name ="action" value = "query" />    
+<parameter name ="prop"   value = "revisions" />    
+<parameter name ="titles" value = "NewYork" />    
+<parameter name ="rvprop" value = "timestamp|user|comment|content" />    
+<parameter name ="format" value = "json" />
+</request>    
+    
+ </wiki>

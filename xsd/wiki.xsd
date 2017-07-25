@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.klindziuk.com/wiki" xmlns:tns="http://www.klindziuk.com/wiki"
+	elementFormDefault="qualified">
+
+	<!--complex type for root element -->
+	<xs:element name="wiki">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Request" type="tns:Request"
+					minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="Request">
+                <xs:sequence>
+			<xs:element name="parameter" type="xs:string" minOccurs="1"	maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="tns:Name" use="required" />
+		<xs:attribute name="value" type="tns:Value" use="required" />
+	</xs:complexType>
+
+
+	<!--simple types for tag's attributes -->
+	<xs:simpleType name="Name">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Za-z\s.-]+" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Value">
+		<xs:restriction base="xs:string">
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
