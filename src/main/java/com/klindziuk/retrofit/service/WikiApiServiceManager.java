@@ -54,7 +54,7 @@ public final class WikiApiServiceManager  {
 			});
 		}
 	}
-	
+	 
 	public void setRequestList(List<Map<String, String>> requestList) {
 		this.requestList = requestList;
 	}

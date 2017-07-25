@@ -14,5 +14,5 @@ public class Runner {
 				WikiApiServiceManager manager = new WikiApiServiceManager();
 				manager.setRequestList(parser.getRequestList());
 				manager.sendRequests();	
-			}
+		}
 }
