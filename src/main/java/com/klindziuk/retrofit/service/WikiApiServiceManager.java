@@ -1,4 +1,4 @@
-package com.klindziuk.retrofit.manager;
+package com.klindziuk.retrofit.service;
 
 import java.util.List;
 import java.util.Map;
@@ -7,7 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.klindziuk.retrofit.WikiApiService;
 import com.klindziuk.retrofit.model.WikiResponse;
 
 import retrofit2.Call;
@@ -16,7 +15,7 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class RequestManager  {
+public final class WikiApiServiceManager  {
 	private static final Logger logger = LogManager.getRootLogger();
 	private static final String BASE_URL = "https://en.wikipedia.org/";
 	private static final String RESPONSE_PARSE = "Parsing response - ";

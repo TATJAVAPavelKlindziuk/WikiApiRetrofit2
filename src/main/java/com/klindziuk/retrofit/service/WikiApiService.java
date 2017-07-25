@@ -1,4 +1,4 @@
-package com.klindziuk.retrofit;
+package com.klindziuk.retrofit.service;
 
 import java.util.Map;
 
