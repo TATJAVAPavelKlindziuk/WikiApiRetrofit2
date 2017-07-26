@@ -14,5 +14,4 @@ public class AsyncRunner {
 		AsyncHelper.waitForResponse(manager);
 		logger.info(manager.getResult());
 	}
-		
 }
