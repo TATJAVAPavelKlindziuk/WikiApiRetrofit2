@@ -1,8 +1,8 @@
 package com.klindziuk.retrofit.parser;
 
+
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @SuppressWarnings("restriction")
 public class ParametersDomParser {
-	private static final Logger logger = LogManager.getRootLogger();
+	private static final Logger logger = Logger.getLogger(ParametersDomParser.class);
 	private static final String REQUEST = "request";
 	private static final String PARAMETER = "parameter";
 	private static final String NAME = "name";

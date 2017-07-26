@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.klindziuk.retrofit.model.WikiResponse;
@@ -17,38 +18,41 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class WikiApiServiceManager {
-	private static final Logger logger = LogManager.getRootLogger();
+public final class ASyncServiceManager  {
+	private static final Logger logger = Logger.getLogger(SyncServiceManager.class);
 	private static final String BASE_URL = "https://en.wikipedia.org/";
 	private static final String RESPONSE_PARSE = "Parsing response - ";
 	private static final String ERROR_RESPONSE_MESSAGE = "Cannot receive response.";
 	private static final String IO_RESPONSE_ERROR_MESSAGE = "Error during reading data from ";
 	private List<Map<String, String>> requestList;
 	private List<WikiResponse> responseList;
-						
-	public WikiApiServiceManager(List<Map<String, String>> requestList) {
-			this.requestList = requestList;
+								
+	public ASyncServiceManager() {
+		this.requestList = ServiceManagerHelper.initialize();
 	}
 
 	public List<WikiResponse> getResponseList() {
 		return responseList;
 	}
 
-	public void sendRequest() throws InterruptedException {
+	public void sendRequest()  {
 		Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
 				.build();
 		WikiApiService service = retrofit.create(WikiApiService.class);
+		final CountDownLatch latch = new CountDownLatch(1);
 		responseList = new ArrayList<>();
 		for (Map<String, String> paramMap : requestList) {
 			Call<ResponseBody> call = service.getResponse(paramMap);
 			call.enqueue(new Callback<ResponseBody>() {
+				
 				public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-					logger.info(RESPONSE_PARSE + response + response.hashCode());
+					logger.info(RESPONSE_PARSE + Thread.currentThread().getName());
 					if (response.isSuccess()) {
 					WikiResponse wikiResponse = null;
 					try {
 						wikiResponse = fillWikiResponse(response);
 						responseList.add(wikiResponse);
+						latch.countDown();
 					} catch (IOException ioex) {
 						logger.error(IO_RESPONSE_ERROR_MESSAGE + response + response.hashCode());
 						ioex.printStackTrace();
@@ -72,7 +76,15 @@ public final class WikiApiServiceManager {
 				logger.error(ERROR_RESPONSE_MESSAGE, throwable);
 				 }
 			});
-			
+			try {
+				latch.await(5, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		System.out.println("FINISHED - " + Thread.currentThread().getName());
 	}
+
+	
 }
