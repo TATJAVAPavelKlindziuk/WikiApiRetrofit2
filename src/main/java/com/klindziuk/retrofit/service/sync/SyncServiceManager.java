@@ -1,4 +1,4 @@
-package com.klindziuk.retrofit.service;
+package com.klindziuk.retrofit.service.sync;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.klindziuk.retrofit.model.WikiResponse;
+import com.klindziuk.retrofit.service.ServiceManagerHelper;
+import com.klindziuk.retrofit.service.WikiApiService;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

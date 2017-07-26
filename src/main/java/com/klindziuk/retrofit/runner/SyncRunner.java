@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.klindziuk.retrofit.service.SyncServiceManager;
+import com.klindziuk.retrofit.service.sync.SyncServiceManager;
 
 public class SyncRunner {
 	private static final Logger logger = Logger.getLogger(SyncServiceManager.class);

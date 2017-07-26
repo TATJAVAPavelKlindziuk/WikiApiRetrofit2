@@ -1,15 +1,16 @@
-package com.klindziuk.retrofit.service;
+package com.klindziuk.retrofit.service.async;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
 import com.klindziuk.retrofit.model.WikiResponse;
+import com.klindziuk.retrofit.service.ServiceManagerHelper;
+import com.klindziuk.retrofit.service.WikiApiService;
+import com.klindziuk.retrofit.service.sync.SyncServiceManager;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -18,10 +19,10 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class ASyncServiceManager {
+public final class ASyncServiceManager implements Runnable {
 	private static final Logger logger = Logger.getLogger(SyncServiceManager.class);
 	private static final String BASE_URL = "https://en.wikipedia.org/";
-	private static final String RESPONSE_PARSE = "Parsing response - ";
+	private static final String RESPONSE_PARSE = "Parsing request - ";
 	private static final String ERROR_RESPONSE_MESSAGE = "Cannot receive response.";
 	private static final String IO_RESPONSE_ERROR_MESSAGE = "Error during reading data from ";
 	private List<Map<String, String>> requestList;
@@ -31,20 +32,15 @@ public final class ASyncServiceManager {
 		this.requestList = ServiceManagerHelper.initialize();
 	}
 
-	public List<WikiResponse> getResponseList() {
-		return responseList;
-	}
-
-	public void sendRequest() {
+	@Override
+	public void run() {
 		Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
 				.build();
 		WikiApiService service = retrofit.create(WikiApiService.class);
-		final CountDownLatch latch = new CountDownLatch(1);
 		responseList = new ArrayList<>();
 		for (Map<String, String> paramMap : requestList) {
 			Call<ResponseBody> call = service.getResponse(paramMap);
 			call.enqueue(new Callback<ResponseBody>() {
-
 				public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 					logger.info(RESPONSE_PARSE + Thread.currentThread().getName());
 					if (response.isSuccess()) {
@@ -52,12 +48,10 @@ public final class ASyncServiceManager {
 						try {
 							wikiResponse = fillWikiResponse(response);
 							responseList.add(wikiResponse);
-							latch.countDown();
 						} catch (IOException ioex) {
 							logger.error(IO_RESPONSE_ERROR_MESSAGE + response + response.hashCode());
 							ioex.printStackTrace();
 						}
-						logger.info(wikiResponse);
 					}
 				}
 
@@ -65,7 +59,8 @@ public final class ASyncServiceManager {
 					WikiResponse wikiresponse = new WikiResponse();
 					wikiresponse.setCode(response.code());
 					// wikiresponse.setBody(response.body().string());
-					// we receive a very huge string, so just take only size
+					// we receive a very huge string, so just take only
+					// size
 					wikiresponse.setBody(String.valueOf(response.body().string().length()));
 					wikiresponse.setMessage(response.message());
 					wikiresponse.setHeaders(response.headers().toMultimap());
@@ -76,11 +71,15 @@ public final class ASyncServiceManager {
 					logger.error(ERROR_RESPONSE_MESSAGE, throwable);
 				}
 			});
-			try {
-				latch.await(5, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException inex) {
-				logger.error(inex);
-			}
 		}
 	}
+
+	public List<WikiResponse> getResult() {
+		return responseList;
+	}
+
+	public void setResult(List<WikiResponse> result) {
+		this.responseList = result;
+	}
+	
 }
