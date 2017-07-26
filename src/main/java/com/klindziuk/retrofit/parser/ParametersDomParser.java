@@ -1,6 +1,5 @@
 package com.klindziuk.retrofit.parser;
 
-
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 import org.apache.log4j.Logger;
