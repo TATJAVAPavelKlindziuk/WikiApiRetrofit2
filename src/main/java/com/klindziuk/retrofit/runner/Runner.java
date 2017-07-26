@@ -7,11 +7,11 @@ import com.klindziuk.retrofit.service.WikiApiServiceManager;
 
 public class Runner {
 	private static final String WIKI_FILE_PATH = "xml/wiki.xml";
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		ParametersDomParser parser = new ParametersDomParser();
 		parser.parse(WIKI_FILE_PATH);
-		WikiApiServiceManager manager = new WikiApiServiceManager();
-		manager.setRequestList(parser.getRequestList());
-		manager.sendRequests();
+		WikiApiServiceManager manager = new WikiApiServiceManager(parser.getRequestList());
+		manager.sendRequest();
+		System.out.println(manager.getResponseList().toString());
 	}
 }

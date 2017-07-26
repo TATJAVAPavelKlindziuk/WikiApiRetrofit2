@@ -1,6 +1,7 @@
 package com.klindziuk.retrofit.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,34 +17,45 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class WikiApiServiceManager  {
+public final class WikiApiServiceManager {
 	private static final Logger logger = LogManager.getRootLogger();
 	private static final String BASE_URL = "https://en.wikipedia.org/";
 	private static final String RESPONSE_PARSE = "Parsing response - ";
 	private static final String ERROR_RESPONSE_MESSAGE = "Cannot receive response.";
 	private static final String IO_RESPONSE_ERROR_MESSAGE = "Error during reading data from ";
 	private List<Map<String, String>> requestList;
-				
-		public void sendRequests() {
+	private List<WikiResponse> responseList;
+						
+	public WikiApiServiceManager(List<Map<String, String>> requestList) {
+			this.requestList = requestList;
+	}
+
+	public List<WikiResponse> getResponseList() {
+		return responseList;
+	}
+
+	public void sendRequest() throws InterruptedException {
 		Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
 				.build();
 		WikiApiService service = retrofit.create(WikiApiService.class);
+		responseList = new ArrayList<>();
 		for (Map<String, String> paramMap : requestList) {
 			Call<ResponseBody> call = service.getResponse(paramMap);
 			call.enqueue(new Callback<ResponseBody>() {
 				public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 					logger.info(RESPONSE_PARSE + response + response.hashCode());
 					if (response.isSuccess()) {
-					WikiResponse wikiresponse = null;
+					WikiResponse wikiResponse = null;
 					try {
-						wikiresponse = fillWikiResponse(response);
+						wikiResponse = fillWikiResponse(response);
+						responseList.add(wikiResponse);
 					} catch (IOException ioex) {
 						logger.error(IO_RESPONSE_ERROR_MESSAGE + response + response.hashCode());
 						ioex.printStackTrace();
 					}
-					logger.info(wikiresponse);
+					logger.info(wikiResponse);
 				  }
-				}
+		    	}
 
 				private WikiResponse fillWikiResponse(Response<ResponseBody> response) throws IOException {
 					WikiResponse wikiresponse = new WikiResponse();
@@ -60,10 +72,7 @@ public final class WikiApiServiceManager  {
 				logger.error(ERROR_RESPONSE_MESSAGE, throwable);
 				 }
 			});
+			
 		}
-	}
-	 
-	public void setRequestList(List<Map<String, String>> requestList) {
-		this.requestList = requestList;
 	}
 }
